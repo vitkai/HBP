@@ -1,0 +1,21 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Home Budget Project</h1>
+
+<p>Welcome to <em>HBP</em>, a very basic Django website developed as a tutorial example modified for selfeducational purposes.
+
+
+<h2>Dynamic content</h2>
+
+<p>The daatabase has the following record counts:</p>
+<ul>
+<li><strong>Transactions:</strong> {{ num_trans }}</li>
+<li><strong>Currencies:</strong> {{ num_ccys }}</li>
+<li><strong>Categories:</strong> {{ num_categories }}</li>
+</ul>
+
+
+You have visited this page {{ num_visits }} times.
+
+{% endblock %}

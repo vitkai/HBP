@@ -1,0 +1,9 @@
+**/*.log
+/.idea/
+__pycache__/
+*.py[cod]
+scratch.py
+*xls[x]
+*.csv
+temp.py
+*.db

@@ -1,0 +1,15 @@
+- work with data + interface
+	-- interface to add/input data -> use django
+		-- basic admin interface
+		(+) ---===---
+		-- basic user interface views
+            -- index (main)
+            -- Transactions list w/ filters by time
+        -- basic user interface forms
+		
+	-- file parser (.csv or similar) for bulk uploads
+
+- add test modules for TDD
+
+- info:
+    https://www.yworks.com/yed-live/

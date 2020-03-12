@@ -1,0 +1,32 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h2>Budget Project file view page</h2>
+
+	<!-- Check if uploaded document exists -->
+	{% if item %}
+		<p><strong>{{ item.docfile.name }}</strong></p>
+
+	<!-- Process file form placeholder. Note enctype attribute! -->
+		<form action="" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<p><input type="submit" value="Process" name="proc_btn" /></p>
+		</form>
+
+	{% else %}
+		<p>No file found.</p>
+	{% endif %}
+
+	<!-- Check if there are processed data -->
+	{% if nores %}
+		<p>No processing results</p>
+	{% else %}
+		<p>Processing output:</p>
+		<div>
+		{% autoescape off %}
+			{{ proc_res | safe }}
+		{% endautoescape %}
+		</div>
+	{% endif %}
+
+{% endblock %}

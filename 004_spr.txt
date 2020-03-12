@@ -1,0 +1,29 @@
+- work with data + interface
+	-- uploading 
+		-- update behaviour to allow work with already uploaded files
+	-- uploaded file processing 
+		-- implement db update with data from file
+			-- avoid duplicates in db during update file
+		
+    -- UI design 
+        -- prepare drafts for UI pages and forms
+	-- interface to add/input data -> use django
+		-- basic user interface views
+            -- index (main)
+            -- Transactions list w/ filters by time
+        -- basic user interface forms
+
+(+) ---===---		
+	-- file parser (.csv or similar) for bulk uploads
+	-- file upload mechanism draft
+	-- UI design 
+        -- select UI design tool
+
+
+- add test modules for TDD
+
+- info:
+    https://www.yworks.com/yed-live/
+    https://html-online.com/editor/
+	https://github.com/pawelsalawa/sqlitestudio/releases
+	https://docs.djangoproject.com/en/dev/topics/http/file-uploads/

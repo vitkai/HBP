@@ -1,0 +1,59 @@
+# Descr: configuration file for .xlsx parser
+# @author: vitkai
+# Created: Wed Feb 25 2019 19:20 MSK
+categories:
+    - Care
+    - Clothes
+    - Communications
+    - Food
+    - House
+    - Other
+    - Rent
+    - Study/Stationery
+    - Trip
+            
+# ssheet tab to read
+test_tab:   "Февраль'20"
+
+# headers by years
+2020:
+    CCY:    EUR
+    # the row where header ends and data begins
+    data_row:   2
+    data_end_token:   'ИТОГО'
+    # columns indexes map for spreadsheet header
+    date:   0
+    received:
+        ind:    1
+        comment:    1
+        val:    2
+    spent:
+        ind:    3
+        Food:
+            comment:    3
+            val:    4
+        Trip:   
+            comment:    N/A
+            val:    5
+        Clothes:
+            comment:    6
+            val:    7
+        Other:
+            comment:    8
+            val:    9
+        Study/Stationery:
+            comment:    8
+            val:    9
+        Rent:
+            comment:    10
+            val:    11
+        Care:
+            comment:    12
+            val:    13
+        House:
+            comment:    14
+            val:    15
+        Communications:
+            comment:    16
+            val:    17
+            
