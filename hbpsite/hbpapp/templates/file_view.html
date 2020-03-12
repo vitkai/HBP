@@ -21,6 +21,12 @@
 	{% if nores %}
 		<p>No processing results</p>
 	{% else %}
+		<!-- Import data from output to database. Note enctype attribute! -->
+		<form action="" method="post" enctype="multipart/form-data">
+			{% csrf_token %}
+			<p><input type="submit" value="Import data" name="imprt_btn" /></p>
+		</form>
+
 		<p>Processing output:</p>
 		<div>
 		{% autoescape off %}

@@ -59,11 +59,18 @@ def file_view(request, pk):
     proc_res = ""
     
     if request.method == 'POST':
-        form = ProcessFileForm(request.POST)
-        if form.is_valid():
-            proc_res = parse(item.docfile.name)
-            # text = form.cleaned_data['message']
-            # return HttpResponseRedirect(reverse('file_view'))
+        # check if Process button is clicked
+        if 'proc_btn' in request.POST:
+            form = ProcessFileForm(request.POST)
+            if form.is_valid():
+                proc_res = parse(item.docfile.name)
+        # check if 'Import data' button is clicked
+        elif 'imprt_btn' in request.POST:
+            pass
+            # ToDo: 
+            # 1) need to store proc_res after 'proc_btn' is clicked
+            # a) object in models to store proc_res
+            # b) a temp record in db or a record linked to Document(docfile) from upload_file
     else:
         form = ProcessFileForm() # An empty, unbound form
         
