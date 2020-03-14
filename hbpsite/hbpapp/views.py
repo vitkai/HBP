@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views import generic
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.core.cache import cache
 
 from .models import Transactions, CCY, Category, Document
 
@@ -64,13 +65,31 @@ def file_view(request, pk):
             form = ProcessFileForm(request.POST)
             if form.is_valid():
                 proc_res = parse(item.docfile.name)
+                
+                # temporarily save file processing results data
+                ## request.session['_proc_res'] = proc_res
+                """
+                cache.set(pk, pickle.dumps(proc_res))
+                request.session.put('proc_res_cache', pk)
+                """
         # check if 'Import data' button is clicked
         elif 'imprt_btn' in request.POST:
-            pass
+        
             # ToDo: 
             # 1) need to store proc_res after 'proc_btn' is clicked
             # a) object in models to store proc_res
             # b) a temp record in db or a record linked to Document(docfile) from upload_file
+            
+            # restore file processing results data from cache
+            ## proc_res = request.session.get['_proc_res']
+            """
+            cache_key == request.session.get("proc_res_cache")
+
+            if cache_key and cache.get(cache_key) is not None:
+                proc_res = pickle.loads(cache.get(cache_key))
+            """
+            # update db with proc_res data
+            
     else:
         form = ProcessFileForm() # An empty, unbound form
         
