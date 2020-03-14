@@ -25,10 +25,20 @@ def general_init():
     full_path, filename = path.split(path.realpath(__file__))
     logger.debug("Full path: {0} | filename: {1}".format(full_path, filename))
     
+"""
+def get_uniq_col_values(df, clmn):
+"""
+"""
+    receives parameters:
+        df - pandas dataframe
+    returns list of unique values
+"""
+"""
+    val_list = df[clmn].tolist()
+    
+    return val_list
+"""
 
-# main starts here
-if __name__ == "__main__":
-    print("Please call 'proc_db_import' to update db with DF data")
 
 def proc_db_import(df_to_proc):
     general_init()
@@ -37,8 +47,19 @@ def proc_db_import(df_to_proc):
     print("\nThat's all folks")
 
     result = 'proc_db_import says hello'
+    
+    # get a list of unique values form 'Category' column
+    # cats = get_uniq_col_values(df_to_proc)
+    cats = set(df_to_proc['Category'].tolist())
+    
+    msg = f"Categories list:\n{cats}"
+    
+    logger.debug(msg)
+    
+    result = result + ' | ' + msg
 
     return result
+
 
 # main starts here
 if __name__ == "__main__":

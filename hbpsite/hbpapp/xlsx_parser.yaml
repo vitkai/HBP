@@ -42,18 +42,18 @@ test_tab:   "Февраль'20"
             comment:    8
             val:    9
         Study/Stationery:
-            comment:    8
-            val:    9
-        Rent:
             comment:    10
             val:    11
-        Care:
+        Rent:
             comment:    12
             val:    13
-        House:
+        Care:
             comment:    14
             val:    15
-        Communications:
+        House:
             comment:    16
             val:    17
+        Communications:
+            comment:    18
+            val:    19
             
