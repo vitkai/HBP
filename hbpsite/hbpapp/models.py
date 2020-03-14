@@ -71,3 +71,9 @@ class Transactions(models.Model):
 class Document(models.Model):
     #docfile = models.FileField(upload_to='documents/%Y/%m/%d')
     docfile = models.FileField(upload_to='uploaded_files')
+    
+"""
+class Doc_proc_data(models.Model):
+    doc = models.ForeignKey('CCY', on_delete=models.SET_NULL, null=False)
+    
+"""
