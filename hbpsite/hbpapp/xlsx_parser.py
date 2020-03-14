@@ -56,7 +56,7 @@ def load_cfg():
     return cfg
 
 
-def get_transactions(cat, date_col, cat_val_col, cat_comm_col, ccy, df_inp):
+def get_transactions_by_cat(cat, date_col, cat_val_col, cat_comm_col, ccy, df_inp):
     """
     receives parameters:
         cat - category name
@@ -97,13 +97,13 @@ def get_transactions(cat, date_col, cat_val_col, cat_comm_col, ccy, df_inp):
     cat_list = [cat] * len(filtered_df)
     filtered_df.insert(3, 'Category', cat_list)
     
-    print(filtered_df)
+    # print(filtered_df)
     
     return filtered_df
     
     
 
-def check_cfg(cfg, df_inp):
+def process_ssheet_tab(cfg, df_inp):
     # configuration check
     
     date_col = cfg[2020]['date']
@@ -119,12 +119,12 @@ def check_cfg(cfg, df_inp):
     for cat in cfg['categories']:
         if cat in cfg[2020]['spent']:
             # print('{} | {} '.format(cat, cfg[2020]['spent'][cat]['val']))
-            trans_res = get_transactions(cat, date_col, cfg[2020]['spent'][cat]['val'], cfg[2020]['spent'][cat]['comment'], cfg[2020]['CCY'], df_inp)
+            trans_res = get_transactions_by_cat(cat, date_col, cfg[2020]['spent'][cat]['val'], cfg[2020]['spent'][cat]['comment'], cfg[2020]['CCY'], df_inp)
             # merge transactions vertically
             trans_df = pd.concat([trans_df, trans_res], axis=0).reset_index(drop=True)
 
     msg = 'Transformed dataframe: \n{}'.format(trans_df)
-    print(msg)
+    # print(msg)
     logger.debug(msg)
     
     return trans_df
@@ -148,15 +148,18 @@ def import_xlsx(src_fl):
     
     return pd_imp, stored_tabs
     
-
-# main starts here
-def parse(file_to_proc):
+def general_init():
     global logger, full_path
     logger = logging_setup()
 
     # get script path
     full_path, filename = path.split(path.realpath(__file__))
     logger.debug("Full path: {0} | filename: {1}".format(full_path, filename))
+    
+
+# main starts here
+def parse(file_to_proc):
+    general_init()
     
     conf = load_cfg()
     
@@ -176,11 +179,21 @@ def parse(file_to_proc):
     
     df_table, df_tabs = import_xlsx(file_to_proc)
     
-    result = check_cfg(conf, df_table[df_tabs[1]])
+    result = process_ssheet_tab(conf, df_table[df_tabs[1]])
  
     logger.debug("That's all folks")
     print("\nThat's all folks")
     
+    return result
+
+def proc_db_import(df_to_proc):
+    general_init()
+    
+    logger.debug("That's all folks")
+    print("\nThat's all folks")
+
+    result = 'proc_db_import says hello'
+
     return result
 
 if __name__ == "__main__":

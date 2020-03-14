@@ -7,7 +7,7 @@ from django.core.cache import cache
 from .models import Transactions, CCY, Category, Document
 
 # own function to handle an uploaded file
-from .xlsx_parser import parse
+from .xlsx_parser import parse, proc_db_import
 from .forms import UploadFileForm, ProcessFileForm
 
 
@@ -68,30 +68,18 @@ def file_view(request, pk):
                 proc_res = parse(item.docfile.name)
                 
                 # temporarily save file processing results data
-                ## request.session['_proc_res'] = proc_res
-                
-                # cache.set(pk, pickle.dumps(proc_res))
                 cache.set(pk, proc_res)
-                #request.session.put('proc_res_cache', pk)
                 
         # check if 'Import data' button is clicked
         elif 'imprt_btn' in request.POST:
             form = ProcessFileForm(request.POST)
             if form.is_valid():
-        
-                # ToDo: 
-                # 1) need to store proc_res after 'proc_btn' is clicked
-                # a) object in models to store proc_res
-                # b) a temp record in db or a record linked to Document(docfile) from upload_file
-                
                 # restore file processing results data from cache
-                ## proc_res = request.session.get['_proc_res']
-                
                 proc_res = cache.get(pk)
                 
                 # update db with proc_res data
-                
                 imp_res = 'Import results placeholder'
+                imp_res = proc_db_import(proc_res)
             
     else:
         form = ProcessFileForm() # An empty, unbound form
