@@ -26,7 +26,11 @@
 			{% csrf_token %}
 			<p><input type="submit" value="Import data" name="imprt_btn" /></p>
 		</form>
-
+		
+		{% if imp_res %}
+			<p>Import results: {{ imp_res }}</p>
+		{% endif %}
+		
 		<p>Processing output:</p>
 		<div>
 		{% autoescape off %}

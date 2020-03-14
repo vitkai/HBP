@@ -58,6 +58,7 @@ def file_view(request, pk):
     item = Document.objects.get(pk=pk)
 
     proc_res = ""
+    imp_res = ""
     
     if request.method == 'POST':
         # check if Process button is clicked
@@ -68,27 +69,29 @@ def file_view(request, pk):
                 
                 # temporarily save file processing results data
                 ## request.session['_proc_res'] = proc_res
-                """
-                cache.set(pk, pickle.dumps(proc_res))
-                request.session.put('proc_res_cache', pk)
-                """
+                
+                # cache.set(pk, pickle.dumps(proc_res))
+                cache.set(pk, proc_res)
+                #request.session.put('proc_res_cache', pk)
+                
         # check if 'Import data' button is clicked
         elif 'imprt_btn' in request.POST:
+            form = ProcessFileForm(request.POST)
+            if form.is_valid():
         
-            # ToDo: 
-            # 1) need to store proc_res after 'proc_btn' is clicked
-            # a) object in models to store proc_res
-            # b) a temp record in db or a record linked to Document(docfile) from upload_file
-            
-            # restore file processing results data from cache
-            ## proc_res = request.session.get['_proc_res']
-            """
-            cache_key == request.session.get("proc_res_cache")
-
-            if cache_key and cache.get(cache_key) is not None:
-                proc_res = pickle.loads(cache.get(cache_key))
-            """
-            # update db with proc_res data
+                # ToDo: 
+                # 1) need to store proc_res after 'proc_btn' is clicked
+                # a) object in models to store proc_res
+                # b) a temp record in db or a record linked to Document(docfile) from upload_file
+                
+                # restore file processing results data from cache
+                ## proc_res = request.session.get['_proc_res']
+                
+                proc_res = cache.get(pk)
+                
+                # update db with proc_res data
+                
+                imp_res = 'Import results placeholder'
             
     else:
         form = ProcessFileForm() # An empty, unbound form
@@ -100,5 +103,5 @@ def file_view(request, pk):
         # convert DF to html table
         proc_res = proc_res.to_html(index=False)
     
-    return render(request, 'file_view.html', {'item': item, 'form': form, 'proc_res': proc_res, 'nores': nores})
+    return render(request, 'file_view.html', {'item': item, 'form': form, 'proc_res': proc_res, 'nores': nores, 'imp_res': imp_res})
     # return render(request, 'file_view.html', {'item': item})
