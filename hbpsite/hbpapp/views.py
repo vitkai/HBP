@@ -7,7 +7,8 @@ from django.core.cache import cache
 from .models import Transactions, CCY, Category, Document
 
 # own function to handle an uploaded file
-from .xlsx_parser import parse, proc_db_import
+from .xlsx_parser import parse
+from .db_updates import proc_db_import
 from .forms import UploadFileForm, ProcessFileForm
 
 
