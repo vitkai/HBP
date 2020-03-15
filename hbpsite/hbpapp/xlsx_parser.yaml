@@ -18,6 +18,7 @@ test_tab:   "Февраль'20"
 # headers by years
 2020:
     CCY:    EUR
+    #CCY:    GBP
     # the row where header ends and data begins
     data_row:   2
     data_end_token:   'ИТОГО'

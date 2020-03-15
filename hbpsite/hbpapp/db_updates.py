@@ -7,7 +7,7 @@ import __main__
 import pandas as pd
 
 from os import path
-from .models import Category, CCY #, Transactions, Document
+from .models import Category, CCY, Transactions #, Document
 
 # own function to setup logger
 from .my_logger import logging_setup
@@ -49,7 +49,7 @@ def check_categories(df):
             new_cat.save()
     
     if res_status == '':
-        res_status = 'No db updates'
+        res_status = 'No Category updates'
     
     return res_status
 
@@ -81,9 +81,65 @@ def check_currencies(df):
             new_cat.save()
     
     if res_status == '':
-        res_status = 'No db updates'
+        res_status = 'No Currency updates'
     
     return res_status
+
+
+def update_transactions(df):
+    """
+    receives parameters: 
+        df - DataFrame to work with
+    returns check status string
+    """
+    
+    res_status = ''
+    
+    tr_ignored_cnt = 0
+    tr_updated_cnt = 0
+    tr_added_cnt = 0
+    
+    # iterate through DataFrame rows
+    for row in df.itertuples():
+
+        # get currency
+        curr = df['CCY']
+        curr = CCY.objects.get(name=curr)
+
+        # get Category
+        cat = df['Category']
+        cat = Category.objects.get(name=cat)
+
+        date = df['Date']
+        sum = df['Sum']
+
+        # check if a Transaction exists in db
+        if Transaction.objects.filter(tr_date=date, Sum=sum, CCY=curr, Category=cat).exists():
+            msg = f"Transaction already exists in db:\n{row}"
+            logger.debug(msg)
+            tr_ignored_cnt = tr_ignored_cnt + 1
+        else:
+            msg = f"Adding Transaction: \n{row}"
+            logger.debug(msg)
+            
+            comm = df['Comments']
+            comm = Category.objects.get(name=comm)
+
+            new_tran = Transaction.objects.filter(tr_date=date, Sum=sum, CCY=curr, Category=cat, Content=comm)
+            new_tran.save()
+            
+            tr_added_cnt = tr_added_cnt + 1
+            
+   
+    if tr_ignored_cnt + tr_updated_cnt + tr_added_cnt == 0:
+        res_status = 'No Transaction updates'
+    else:
+        msg = f"Transactions counts: \nIgnored: {tr_ignored_cnt} \nUpdated: {tr_updated_cnt} \nAdded: {tr_added_cnt}"
+        logger.debug(msg)
+        res_status = res_status + '|' + msg
+    
+    return res_status
+
 
 
 def proc_db_import(df_to_proc):
@@ -95,6 +151,7 @@ def proc_db_import(df_to_proc):
     result = 'proc_db_import says hello'
     result = result + ' | ' + check_categories(df_to_proc)
     result = result + ' | ' + check_currencies(df_to_proc)
+    result = result + ' | ' + update_transactions(df_to_proc)
 
     return result
 
