@@ -4,16 +4,12 @@ Descr: module to update db from input DF
 Created: Sat Mar 14 2020 22:02 MSK
 """
 import __main__
-from os import path
 import pandas as pd
-"""
-import codecs
-import logging
-import yaml as yml
-from shutil import copy2
-"""
 
-# own function to handle an uploaded file
+from os import path
+from .models import Category #, Transactions, CCY, Document
+
+# own function to setup logger
 from .my_logger import logging_setup
 
     
@@ -25,19 +21,32 @@ def general_init():
     full_path, filename = path.split(path.realpath(__file__))
     logger.debug("Full path: {0} | filename: {1}".format(full_path, filename))
     
-"""
-def get_uniq_col_values(df, clmn):
-"""
-"""
+
+def check_categories(catl):
+    """
     receives parameters:
-        df - pandas dataframe
-    returns list of unique values
-"""
-"""
-    val_list = df[clmn].tolist()
+        catl - categories list
+    returns check status string
+    """
+    res_status = ''
     
-    return val_list
-"""
+    for cat in catl:
+        if Category.objects.filter(name=cat).exists():
+            msg = f"Category: {cat} already exists in db"
+            logger.debug(msg)
+            res_status = res_status + f'| {msg}'
+        else:
+            new_cat = Category.objects.create(name=cat)
+            msg = f"Adding Category: {new_cat}"
+            logger.debug(msg)
+            res_status = res_status + f'| {msg}'
+            new_cat.save()
+    
+    if res_status == '':
+        res_status = 'No db updates'
+    
+    return res_status
+
 
 
 def proc_db_import(df_to_proc):
@@ -53,10 +62,9 @@ def proc_db_import(df_to_proc):
     cats = set(df_to_proc['Category'].tolist())
     
     msg = f"Categories list:\n{cats}"
-    
     logger.debug(msg)
     
-    result = result + ' | ' + msg
+    result = result + ' | ' + check_categories(cats)
 
     return result
 
