@@ -126,7 +126,7 @@ def update_transactions(df):
         #date = df['Date']
         date = row[0]
         # sum_val = df['Sum']
-        sum_val = row[1]
+        sum_val = round(row[1], 2)
         
         #comm = df['Comments']
         comm = row[4]
@@ -134,7 +134,7 @@ def update_transactions(df):
         # check if a Transaction exists in db
         if Transactions.objects.filter(tr_date=date, Sum=sum_val, CCY=curr, Category=cat).exists():
             msg = f"Transaction already exists in db:\n{row}"
-            logger.debug(msg)
+            #logger.debug(msg)
             tr_ignored_cnt = tr_ignored_cnt + 1
         else:
             msg = f"Adding Transaction: \n{row}"
@@ -144,7 +144,7 @@ def update_transactions(df):
             new_tran.Category.add(cat)
             msg = f"new_tran: \n{new_tran}"
             logger.debug(msg)
-            new_tran.save()
+            #new_tran.save()
             
             tr_added_cnt = tr_added_cnt + 1
    
@@ -158,6 +158,24 @@ def update_transactions(df):
     return res_status
 
 
+def db_remove_duples():
+    row_del_cnt = 0
+    # assuming which duplicate is removed doesn't matter...
+    for row in Transactions.objects.all().reverse():
+        msg=f"row:\n{row}"
+        logger.debug(msg)
+        logger.debug(row.id, row.tr_date)
+        if Transactions.objects.filter(tr_date=row.tr_date, Sum=row.Sum, Category=row.Category, Content=row.Content).count() > 1:
+            msg = f"Removing row:\n{row}"
+            logger.debug(msg)
+            row.delete()
+            row_del_cnt = row_del_cnt + 1
+
+    msg = f"Transaction dupes removed count: {row_del_cnt}"
+    logger.debug(msg)
+
+    return msg
+
 
 def proc_db_import(df_to_proc):
     general_init()
@@ -166,10 +184,13 @@ def proc_db_import(df_to_proc):
     print("\nThat's all folks")
 
     result = 'proc_db_import says hello'
+    """
     result = result + ' | ' + check_categories(df_to_proc)
     result = result + ' | ' + check_currencies(df_to_proc)
     result = result + ' | ' + update_transactions(df_to_proc)
-
+    """
+    result = result + ' | ' + db_remove_duples()
+    
     return result
 
 
