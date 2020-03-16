@@ -63,7 +63,7 @@ def check_currencies(df):
     # get a list of unique values form 'CCY' column
     catl = set(df['CCY'].tolist())
     
-    msg = f"Categories list:\n{catl}"
+    msg = f"Currencies list:\n{catl}"
     logger.debug(msg)
     
     res_status = ''
@@ -99,22 +99,40 @@ def update_transactions(df):
     tr_updated_cnt = 0
     tr_added_cnt = 0
     
+    """
+    # iterating over one column - `f` is some function that processes your data
+    result = [f(x) for x in df['col']]
+    # iterating over two columns, use `zip`
+    result = [f(x, y) for x, y in zip(df['col1'], df['col2'])]
+    # iterating over multiple columns
+    result = [f(row[0], ..., row[n]) for row in df[['col1', ...,'coln']].values]
+    """
+    
     # iterate through DataFrame rows
-    for row in df.itertuples():
+    #for row in df.itertuples():
+    #for curr, cat, date, sum_val, comm in zip(df['CCY'], df['Category'], df['Date'], df['Sum'], df['Comments']):
+    for row in df[['Date', 'Sum', 'CCY', 'Category', 'Comments']].values:
 
         # get currency
-        curr = df['CCY']
+        #curr = df['CCY']
+        curr = row[2]
         curr = CCY.objects.get(name=curr)
 
         # get Category
-        cat = df['Category']
+        #cat = df['Category']
+        cat = row[3]
         cat = Category.objects.get(name=cat)
 
-        date = df['Date']
-        sum = df['Sum']
-
+        #date = df['Date']
+        date = row[0]
+        # sum_val = df['Sum']
+        sum_val = row[1]
+        
+        #comm = df['Comments']
+        comm = row[4]
+        
         # check if a Transaction exists in db
-        if Transaction.objects.filter(tr_date=date, Sum=sum, CCY=curr, Category=cat).exists():
+        if Transactions.objects.filter(tr_date=date, Sum=sum_val, CCY=curr, Category=cat).exists():
             msg = f"Transaction already exists in db:\n{row}"
             logger.debug(msg)
             tr_ignored_cnt = tr_ignored_cnt + 1
@@ -122,14 +140,13 @@ def update_transactions(df):
             msg = f"Adding Transaction: \n{row}"
             logger.debug(msg)
             
-            comm = df['Comments']
-            comm = Category.objects.get(name=comm)
-
-            new_tran = Transaction.objects.filter(tr_date=date, Sum=sum, CCY=curr, Category=cat, Content=comm)
+            new_tran = Transactions.objects.create(tr_date=date, Sum=sum_val, CCY=curr, Content=comm)
+            new_tran.Category.add(cat)
+            msg = f"new_tran: \n{new_tran}"
+            logger.debug(msg)
             new_tran.save()
             
             tr_added_cnt = tr_added_cnt + 1
-            
    
     if tr_ignored_cnt + tr_updated_cnt + tr_added_cnt == 0:
         res_status = 'No Transaction updates'
