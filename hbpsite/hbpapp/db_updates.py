@@ -162,14 +162,32 @@ def db_remove_duples():
     row_del_cnt = 0
     # assuming which duplicate is removed doesn't matter...
     for row in Transactions.objects.all().reverse():
-        msg=f"row:\n{row}"
-        logger.debug(msg)
-        logger.debug(row.id, row.tr_date)
-        if Transactions.objects.filter(tr_date=row.tr_date, Sum=row.Sum, Category=row.Category, Content=row.Content).count() > 1:
-            msg = f"Removing row:\n{row}"
+        
+        trans_list = Transactions.objects.filter(tr_date=row.tr_date, Sum=row.Sum, Content=row.Content)
+        if trans_list.count() > 1:
+            msg=f"row:\n{row}"
             logger.debug(msg)
-            row.delete()
-            row_del_cnt = row_del_cnt + 1
+
+            # get categories related to the row
+            row_cats = list(row.Category.all()) # converting to list to be able to compare
+            msg = f"Categories in row:\n{row_cats}"
+            logger.debug(msg)
+            
+            # check categories of other rows in query set
+            same_cats = False
+            for row_n in trans_list:
+                rown_cats = list(row_n.Category.all())
+                msg = f"Categories in row_n:\n{rown_cats}"
+                logger.debug(msg)
+                if row_cats == rown_cats:
+                    same_cats = True
+                    break
+                
+            if same_cats:
+                msg = f"Removing row:\n{row}"
+                logger.debug(msg)
+                row.delete()
+                row_del_cnt = row_del_cnt + 1
 
     msg = f"Transaction dupes removed count: {row_del_cnt}"
     logger.debug(msg)
@@ -184,12 +202,12 @@ def proc_db_import(df_to_proc):
     print("\nThat's all folks")
 
     result = 'proc_db_import says hello'
-    """
+
     result = result + ' | ' + check_categories(df_to_proc)
     result = result + ' | ' + check_currencies(df_to_proc)
     result = result + ' | ' + update_transactions(df_to_proc)
-    """
-    result = result + ' | ' + db_remove_duples()
+
+    # result = result + ' | ' + db_remove_duples()
     
     return result
 
