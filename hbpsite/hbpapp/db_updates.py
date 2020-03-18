@@ -132,6 +132,7 @@ def update_transactions(df):
         comm = row[4]
         
         # check if a Transaction exists in db
+        # ToDo: add correct Category checks (ManyToMany field)
         if Transactions.objects.filter(tr_date=date, Sum=sum_val, CCY=curr, Category=cat).exists():
             msg = f"Transaction already exists in db:\n{row}"
             #logger.debug(msg)
