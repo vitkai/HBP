@@ -7,7 +7,7 @@ from django.core.cache import cache
 from .models import Transactions, CCY, Category, Document
 
 # own function to handle an uploaded file
-from .xlsx_parser import parse
+from .xlsx_parser import load_file, parse_data
 from .db_updates import proc_db_import
 from .forms import UploadFileForm, ProcessFileForm
 
@@ -58,25 +58,38 @@ def upload_file(request):
 def file_view(request, pk):
     item = Document.objects.get(pk=pk)
 
+    check_res = ""
     proc_res = ""
     imp_res = ""
     
     if request.method == 'POST':
-        # check if Process button is clicked
-        if 'proc_btn' in request.POST:
+        # check if Check_file button is clicked
+        if 'check_btn' in request.POST:
             form = ProcessFileForm(request.POST)
             if form.is_valid():
-                proc_res = parse(item.docfile.name)
+                check_res = load_file(item.docfile.name)
+                # get .xlsx tabs list only from returned result
+                check_res = check_res[2]
                 
                 # temporarily save file processing results data
-                cache.set(pk, proc_res)
+                cache.set(pk, (check_res, proc_res))
+        
+        # check if Process button is clicked
+        elif 'proc_btn' in request.POST:
+            form = ProcessFileForm(request.POST)
+            if form.is_valid():
+                check_res, proc_res = cache.get(pk)
+                proc_res = parse_data(item.docfile.name)
+                
+                # temporarily save file processing results data
+                cache.set(pk, (check_res, proc_res))
                 
         # check if 'Import data' button is clicked
         elif 'imprt_btn' in request.POST:
             form = ProcessFileForm(request.POST)
             if form.is_valid():
                 # restore file processing results data from cache
-                proc_res = cache.get(pk)
+                check_res, proc_res = cache.get(pk)
                 
                 # update db with proc_res data
                 imp_res = 'Import results placeholder'
@@ -92,5 +105,5 @@ def file_view(request, pk):
         # convert DF to html table
         proc_res = proc_res.to_html(index=False)
     
-    return render(request, 'file_view.html', {'item': item, 'form': form, 'proc_res': proc_res, 'nores': nores, 'imp_res': imp_res})
+    return render(request, 'file_view.html', {'item': item, 'form': form, 'check_res': check_res, 'proc_res': proc_res, 'nores': nores, 'imp_res': imp_res})
     # return render(request, 'file_view.html', {'item': item})

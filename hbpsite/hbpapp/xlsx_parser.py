@@ -135,8 +135,12 @@ def general_init():
     full_path, filename = path.split(path.realpath(__file__))
     logger.debug("Full path: {0} | filename: {1}".format(full_path, filename))
     
-
-def parse(file_to_proc):
+def load_file(file_to_proc):
+    """
+    receives parameters:
+        file_to_proc - name of the file to be processed
+    returns configuration, file content, list of tabs (conf, df_table, df_tabs)
+    """
     general_init()
     
     conf = load_cfg()
@@ -157,12 +161,18 @@ def parse(file_to_proc):
     
     df_table, df_tabs = import_xlsx(file_to_proc)
     
-    result = process_ssheet_tab(conf, df_table[df_tabs[1]])
+    return conf, df_table, df_tabs
+    
+
+def parse_data(file_to_proc, tab_id=1):
+    conf, df_table, df_tabs = load_file(file_to_proc)
+    parse_result = process_ssheet_tab(conf, df_table[df_tabs[tab_id]])
  
     logger.debug("That's all folks")
     print("\nThat's all folks")
     
-    return result
+    return parse_result
+    
 
 # main starts here
 if __name__ == "__main__":

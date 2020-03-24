@@ -10,6 +10,10 @@
 	<!-- Process file form placeholder. Note enctype attribute! -->
 		<form action="" method="post" enctype="multipart/form-data">
 			{% csrf_token %}
+			<p><input type="submit" value="Check file" name="check_btn" /></p>
+			{% if check_res %}
+				<p>File check results: {{ check_res | safe}}</p>
+			{% endif %}
 			<p><input type="submit" value="Process" name="proc_btn" /></p>
 		</form>
 
@@ -28,7 +32,7 @@
 		</form>
 		
 		{% if imp_res %}
-			<p>Import results: {{ imp_res }}</p>
+			<p>Import results: {{ imp_res | safe}}</p>
 		{% endif %}
 		
 		<p>Processing output:</p>
