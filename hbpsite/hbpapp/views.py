@@ -71,6 +71,8 @@ def file_view(request, pk):
                 # get .xlsx tabs list only from returned result
                 check_res = check_res[2]
                 
+                #form = ProcessFileForm(dynamic_field_names=check_res)
+                
                 # temporarily save file processing results data
                 cache.set(pk, (check_res, proc_res))
         
@@ -96,6 +98,7 @@ def file_view(request, pk):
                 imp_res = proc_db_import(proc_res)
             
     else:
+        #form = ProcessFileForm(dynamic_field_names='') # An empty, unbound form
         form = ProcessFileForm() # An empty, unbound form
         
     if "" == str(proc_res):
@@ -107,3 +110,4 @@ def file_view(request, pk):
     
     return render(request, 'file_view.html', {'item': item, 'form': form, 'check_res': check_res, 'proc_res': proc_res, 'nores': nores, 'imp_res': imp_res})
     # return render(request, 'file_view.html', {'item': item})
+    
