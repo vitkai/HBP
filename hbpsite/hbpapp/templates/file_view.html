@@ -12,7 +12,7 @@
 			{% csrf_token %}
 			<p><input type="submit" value="Check file" name="check_btn" /></p>
 			{% if check_res %}
-				<p>File check results: {{ check_res | safe}}</p>
+				{{ form | safe}}
 			{% endif %}
 			<p><input type="submit" value="Process" name="proc_btn" /></p>
 		</form>

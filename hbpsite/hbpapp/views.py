@@ -61,45 +61,53 @@ def file_view(request, pk):
     check_res = ""
     proc_res = ""
     imp_res = ""
+    #fields = ['placeholder']
     
     if request.method == 'POST':
         # check if Check_file button is clicked
         if 'check_btn' in request.POST:
-            form = ProcessFileForm(request.POST)
-            if form.is_valid():
-                check_res = load_file(item.docfile.name)
-                # get .xlsx tabs list only from returned result
-                check_res = check_res[2]
-                
-                #form = ProcessFileForm(dynamic_field_names=check_res)
-                
-                # temporarily save file processing results data
-                cache.set(pk, (check_res, proc_res))
+            #form = ProcessFileForm(request.POST)
+            #if form.is_valid():
+            check_res = load_file(item.docfile.name)
+            # get .xlsx tabs list only from returned result
+            check_res = check_res[2]
+            
+            form = ProcessFileForm(dynamic_field_names=check_res)
+            
+            # temporarily save file processing results data
+            cache.set(pk, (check_res, proc_res))
         
         # check if Process button is clicked
         elif 'proc_btn' in request.POST:
-            form = ProcessFileForm(request.POST)
-            if form.is_valid():
-                check_res, proc_res = cache.get(pk)
-                proc_res = parse_data(item.docfile.name)
-                
-                # temporarily save file processing results data
-                cache.set(pk, (check_res, proc_res))
+            #form = ProcessFileForm(request.POST)
+            #if form.is_valid():
+
+            # restore file processing results data from cache
+            check_res, proc_res = cache.get(pk)
+            proc_res = parse_data(item.docfile.name)
+            
+            form = ProcessFileForm(dynamic_field_names=check_res)
+            
+            # temporarily save file processing results data
+            cache.set(pk, (check_res, proc_res))
                 
         # check if 'Import data' button is clicked
         elif 'imprt_btn' in request.POST:
-            form = ProcessFileForm(request.POST)
-            if form.is_valid():
-                # restore file processing results data from cache
-                check_res, proc_res = cache.get(pk)
-                
-                # update db with proc_res data
-                imp_res = 'Import results placeholder'
-                imp_res = proc_db_import(proc_res)
+            # form = ProcessFileForm(request.POST)
+            # if form.is_valid():
+            
+            # restore file processing results data from cache
+            check_res, proc_res = cache.get(pk)
+            
+            form = ProcessFileForm(dynamic_field_names=check_res)
+            
+            # update db with proc_res data
+            imp_res = 'Import results placeholder'
+            imp_res = proc_db_import(proc_res)
             
     else:
-        #form = ProcessFileForm(dynamic_field_names='') # An empty, unbound form
-        form = ProcessFileForm() # An empty, unbound form
+        form = ProcessFileForm(dynamic_field_names='') # An empty, unbound form
+        # form = ProcessFileForm() # An empty, unbound form
         
     if "" == str(proc_res):
         nores = True
@@ -109,5 +117,5 @@ def file_view(request, pk):
         proc_res = proc_res.to_html(index=False)
     
     return render(request, 'file_view.html', {'item': item, 'form': form, 'check_res': check_res, 'proc_res': proc_res, 'nores': nores, 'imp_res': imp_res})
-    # return render(request, 'file_view.html', {'item': item})
+
     
