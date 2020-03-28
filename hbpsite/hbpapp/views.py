@@ -79,15 +79,21 @@ def file_view(request, pk):
         
         # check if Process button is clicked
         elif 'proc_btn' in request.POST:
-            #form = ProcessFileForm(request.POST)
-            #if form.is_valid():
-
             # restore file processing results data from cache
             check_res, proc_res = cache.get(pk)
-            proc_res = parse_data(item.docfile.name)
-            
+
             form = ProcessFileForm(dynamic_field_names=check_res)
-            
+            #form = ProcessFileForm(request.POST or None, dynamic_field_names=request.POST['xlsx_tabs'])
+            #form = ProcessFileForm(request.POST or None)
+            #msg=f"POST.xlsx_tabs={int(request.POST['xlsx_tabs'])}"
+            #print(msg)
+            selection = int(request.POST['xlsx_tabs'])
+            #if form.is_valid():
+            #selection = form.cleaned_data['xlsx_tabs']
+            #selection = dict(form.fields['xlsx_tabs'].choices)[selection]
+    
+            proc_res = parse_data(item.docfile.name, tab_id=selection)
+    
             # temporarily save file processing results data
             cache.set(pk, (check_res, proc_res))
                 

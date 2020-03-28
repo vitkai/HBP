@@ -21,5 +21,6 @@ class ProcessFileForm(forms.Form):
             # self.fields[field_name] = forms.CharField(max_length=32)    # creates a dynamic field
             
         self.fields['xlsx_tabs'] = forms.ChoiceField(
+        #xlsx_tabs = forms.ChoiceField(
             choices=[(idx, str(field_name)) for idx, field_name in enumerate(dynamic_field_names)]
         )

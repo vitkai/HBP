@@ -165,6 +165,10 @@ def load_file(file_to_proc):
     
 
 def parse_data(file_to_proc, tab_id=1):
+    msg = f"tab_id={tab_id}"
+    print(msg)
+    logger.debug(msg)
+    
     conf, df_table, df_tabs = load_file(file_to_proc)
     parse_result = process_ssheet_tab(conf, df_table[df_tabs[tab_id]])
  
