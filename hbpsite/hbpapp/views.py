@@ -15,7 +15,7 @@ from .forms import UploadFileForm, ProcessFileForm
 class TransactionsListView(generic.ListView):
     """Generic class-based view for a list of books."""
     model = Transactions
-    paginate_by = 10
+    paginate_by = 25
 
 
 def index(request):

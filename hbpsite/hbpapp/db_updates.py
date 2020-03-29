@@ -126,16 +126,16 @@ def update_transactions(df):
         #date = df['Date']
         date = row[0]
         # sum_val = df['Sum']
-        sum_val = round(row[1], 2)
+        sum_val = round(float(row[1]), 2)
         
         #comm = df['Comments']
         comm = row[4]
         
         # check if a Transaction exists in db
         # ToDo: add correct Category checks (ManyToMany field)
-        if Transactions.objects.filter(tr_date=date, Sum=sum_val, CCY=curr, Category=cat).exists():
+        if Transactions.objects.filter(tr_date=date, Sum=sum_val, CCY=curr, Content=comm).exists():
             msg = f"Transaction already exists in db:\n{row}"
-            #logger.debug(msg)
+            logger.debug(msg)
             tr_ignored_cnt = tr_ignored_cnt + 1
         else:
             msg = f"Adding Transaction: \n{row}"

@@ -16,7 +16,7 @@ categories:
 test_tab:   "Февраль'20"
 
 # headers by years
-'2020':
+'2019.08-2020':
     CCY:    EUR
     #CCY:    GBP
     # the row where header ends and data begins
@@ -58,9 +58,50 @@ test_tab:   "Февраль'20"
             comment:    18
             val:    19
             
-'2019':
-    CCY:    EUR
-    #CCY:    GBP
+'2019.06-2019.07':
+    CCY:    RUB
+    # the row where header ends and data begins
+    data_row:   2
+    data_end_token:   'ИТОГО'
+    # columns indexes map for spreadsheet header
+    date:   0
+    received:
+        ind:    1
+        comment:    1
+        val:    2
+    spent:
+        ind:    3
+        Food:
+            comment:    3
+            val:    4
+        Trip:   
+            comment:    N/A
+            val:    5
+        Clothes:
+            comment:    6
+            val:    7
+        Other:
+            comment:    8
+            val:    9
+        Study/Stationery:
+            comment:    10
+            val:    11
+        Rent:
+            comment:    12
+            val:    13
+        Care:
+            comment:    14
+            val:    15
+        House:
+            comment:    16
+            val:    17
+        Communications:
+            comment:    18
+            val:    19
+            
+            
+'xxx-2019.05':
+    CCY:    BGN
     # the row where header ends and data begins
     data_row:   2
     data_end_token:   'ИТОГО'
