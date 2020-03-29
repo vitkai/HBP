@@ -81,23 +81,23 @@ def get_transactions_by_cat(cat, date_col, cat_val_col, cat_comm_col, ccy, df_in
     
     
 
-def process_ssheet_tab(cfg, df_inp):
+def process_ssheet_tab(cfg, df_inp, conf_id):
     # configuration check
     
-    date_col = cfg[2020]['date']
+    date_col = cfg[conf_id]['date']
     
     global data_start_row, data_end_row
-    data_start_row = cfg[2020]['data_row']
+    data_start_row = cfg[conf_id]['data_row']
     
     # determine column index by end row token
-    data_end_row = df_inp[df_inp.iloc[:,0] == cfg[2020]['data_end_token']].index.tolist()[0]
+    data_end_row = df_inp[df_inp.iloc[:,0] == cfg[conf_id]['data_end_token']].index.tolist()[0]
 
     trans_df = pd.DataFrame(columns=['Date', 'Sum', 'CCY', 'Category', 'Comments'])
     
     for cat in cfg['categories']:
-        if cat in cfg[2020]['spent']:
-            # print('{} | {} '.format(cat, cfg[2020]['spent'][cat]['val']))
-            trans_res = get_transactions_by_cat(cat, date_col, cfg[2020]['spent'][cat]['val'], cfg[2020]['spent'][cat]['comment'], cfg[2020]['CCY'], df_inp)
+        if cat in cfg[conf_id]['spent']:
+            # print('{} | {} '.format(cat, cfg[conf_id]['spent'][cat]['val']))
+            trans_res = get_transactions_by_cat(cat, date_col, cfg[conf_id]['spent'][cat]['val'], cfg[conf_id]['spent'][cat]['comment'], cfg[conf_id]['CCY'], df_inp)
             # merge transactions vertically
             trans_df = pd.concat([trans_df, trans_res], axis=0).reset_index(drop=True)
 
@@ -164,13 +164,21 @@ def load_file(file_to_proc):
     return conf, df_table, df_tabs
     
 
-def parse_data(file_to_proc, tab_id=1):
-    msg = f"tab_id={tab_id}"
+def parse_data(file_to_proc, tab_id=1, conf_id=2):
+    """
+    parsing of xlsx table
+    receives parameters:
+    file_to_proc - name of the file to be processed
+    tab_id - id of xlsx tab to parse
+    conf_id - id of configuration setup to use form xlsx_parse.yaml (e.g. '2020')
+    returns configuration, file content, list of tabs (conf, df_table, df_tabs)
+    """
+    msg = f"tab_id = {tab_id} | conf_id = {conf_id}"
     print(msg)
     logger.debug(msg)
     
     conf, df_table, df_tabs = load_file(file_to_proc)
-    parse_result = process_ssheet_tab(conf, df_table[df_tabs[tab_id]])
+    parse_result = process_ssheet_tab(conf, df_table[df_tabs[tab_id]], conf_id)
  
     logger.debug("That's all folks")
     print("\nThat's all folks")

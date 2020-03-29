@@ -59,6 +59,7 @@ def file_view(request, pk):
     item = Document.objects.get(pk=pk)
 
     check_res = ""
+    conf = ""
     proc_res = ""
     imp_res = ""
     #fields = ['placeholder']
@@ -70,32 +71,38 @@ def file_view(request, pk):
             #if form.is_valid():
             check_res = load_file(item.docfile.name)
             # get .xlsx tabs list only from returned result
+            conf = check_res[0]
             check_res = check_res[2]
             
-            form = ProcessFileForm(dynamic_field_names=check_res)
+            form = ProcessFileForm(dynamic_field_names=(conf, check_res))
             
             # temporarily save file processing results data
-            cache.set(pk, (check_res, proc_res))
+            cache.set(pk, (conf, check_res, proc_res))
         
         # check if Process button is clicked
         elif 'proc_btn' in request.POST:
             # restore file processing results data from cache
-            check_res, proc_res = cache.get(pk)
+            conf, check_res, proc_res = cache.get(pk)
 
-            form = ProcessFileForm(dynamic_field_names=check_res)
+            form = ProcessFileForm(dynamic_field_names=(conf, check_res))
             #form = ProcessFileForm(request.POST or None, dynamic_field_names=request.POST['xlsx_tabs'])
             #form = ProcessFileForm(request.POST or None)
-            #msg=f"POST.xlsx_tabs={int(request.POST['xlsx_tabs'])}"
-            #print(msg)
+            # msg=f"POST.xlsx_tabs={int(request.POST['xlsx_tabs'])}"
+            # print(msg)
+            print(request.POST)
             selection = int(request.POST['xlsx_tabs'])
+            conf_sel = int(request.POST['conf'])
+            conf_sel = dict(form.fields['conf'].choices)[conf_sel]
+            # msg=f"conf_sel = {conf_sel}"
+            #print(msg)
             #if form.is_valid():
             #selection = form.cleaned_data['xlsx_tabs']
             #selection = dict(form.fields['xlsx_tabs'].choices)[selection]
     
-            proc_res = parse_data(item.docfile.name, tab_id=selection)
+            proc_res = parse_data(item.docfile.name, tab_id=selection, conf_id=conf_sel)
     
             # temporarily save file processing results data
-            cache.set(pk, (check_res, proc_res))
+            cache.set(pk, (conf, check_res, proc_res))
                 
         # check if 'Import data' button is clicked
         elif 'imprt_btn' in request.POST:
@@ -103,16 +110,16 @@ def file_view(request, pk):
             # if form.is_valid():
             
             # restore file processing results data from cache
-            check_res, proc_res = cache.get(pk)
+            conf, check_res, proc_res = cache.get(pk)
             
-            form = ProcessFileForm(dynamic_field_names=check_res)
+            form = ProcessFileForm(dynamic_field_names=(conf, check_res))
             
             # update db with proc_res data
             imp_res = 'Import results placeholder'
             imp_res = proc_db_import(proc_res)
             
     else:
-        form = ProcessFileForm(dynamic_field_names='') # An empty, unbound form
+        form = ProcessFileForm(dynamic_field_names=('', '')) # An empty, unbound form
         # form = ProcessFileForm() # An empty, unbound form
         
     if "" == str(proc_res):

@@ -14,7 +14,13 @@ class ProcessFileForm(forms.Form):
     
     #text = forms.CharField(widget=forms.Textarea)
     """
+    
+    
     def __init__(self, dynamic_field_names, *args, **kwargs):
+        # number of parameters in conf from xlsx_parser.yaml to skip 
+        conf_to_skip = ('categories', 'test_tab')
+        #conf_to_skip = 2
+        
         super(ProcessFileForm, self).__init__(*args, **kwargs)
 
         #for field_name in dynamic_field_names:
@@ -22,5 +28,16 @@ class ProcessFileForm(forms.Form):
             
         self.fields['xlsx_tabs'] = forms.ChoiceField(
         #xlsx_tabs = forms.ChoiceField(
-            choices=[(idx, str(field_name)) for idx, field_name in enumerate(dynamic_field_names)]
+            choices=[(idx, str(field_name)) for idx, field_name in enumerate(dynamic_field_names[1])]
         )
+        
+        conf_fields = dynamic_field_names[0]
+        #print(conf_fields)
+        if len(conf_fields) > 0:
+            # skip parameters from the beginng
+            # conf_fields = conf_fields[conf_to_skip:]
+            
+            self.fields['conf'] = forms.ChoiceField(
+            #xlsx_tabs = forms.ChoiceField(
+                choices=[(idx, str(field_name)) for idx, field_name in enumerate(conf_fields) if field_name not in conf_to_skip]
+            )
