@@ -1,6 +1,6 @@
 - work with data + interface
 	-- uploading + UI
-		-- allow selection of .xlsx tab to process and import
+		-- (+) allow selection of .xlsx tab to process and import
 
 	-- interface to add/input data -> use django
 		-- basic user interface views
