@@ -7,6 +7,9 @@ class UploadFileForm(forms.Form):
     )
     
 
+class RemoveDuples(forms.Form):
+    pass
+
 class ProcessFileForm(forms.Form):
     """
     class Meta:

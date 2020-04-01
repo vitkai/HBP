@@ -1,0 +1,36 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1>Budget Project file upload page</h1>
+
+        <!-- Remove duplicates in database form. Note enctype attribute! -->
+        <form action="{% url 'rem_duples' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p>{{ form.non_field_errors }}</p>
+
+			<p>
+                {{ form.docfile.errors }}
+                {{ form.docfile }}
+            </p>
+
+            <p><input type="submit" value="Remove db duplicates"/></p>
+        </form>
+
+	{% if res %}
+		<p>Processing results: {{ res }} </p>
+	{% else %}
+		<p>No processing results</p>
+	{% endif %}
+	
+	{% if tr_list %}
+		<p>Removed transactions:</p>
+		<ul>
+			{% for line in tr_list %}
+				<li>{{ line }}</li>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<p>No removed transactions list</p>
+	{% endif %}
+
+{% endblock %}

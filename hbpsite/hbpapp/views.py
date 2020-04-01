@@ -8,7 +8,7 @@ from .models import Transactions, CCY, Category, Document
 
 # own function to handle an uploaded file
 from .xlsx_parser import load_file, parse_data
-from .db_updates import proc_db_import
+from .db_updates import proc_db_import, db_remove_duples
 from .forms import UploadFileForm, ProcessFileForm
 
 
@@ -53,7 +53,18 @@ def upload_file(request):
     documents = Document.objects.all()
 
     return render(request, 'upload.html', {'documents': documents, 'form': form})
+
+
+def rem_duples(request):
+    res, tr_list = ('', '')
     
+    if request.method == 'POST':
+        res, tr_list = db_remove_duples()
+        
+    form = ProcessFileForm(dynamic_field_names=('', '')) # An empty, unbound form
+
+    return render(request, 'rem_duples.html', {'form': form, 'res': res, 'tr_list': tr_list})
+
 
 def file_view(request, pk):
     item = Document.objects.get(pk=pk)

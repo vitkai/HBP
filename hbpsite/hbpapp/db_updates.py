@@ -160,6 +160,10 @@ def update_transactions(df):
 
 
 def db_remove_duples():
+    general_init()
+    
+    tr_list = []
+    
     row_del_cnt = 0
     # assuming which duplicate is removed doesn't matter...
     for row in Transactions.objects.all().reverse():
@@ -189,11 +193,12 @@ def db_remove_duples():
                 logger.debug(msg)
                 row.delete()
                 row_del_cnt = row_del_cnt + 1
+                tr_list.append(msg)
 
     msg = f"Transaction dupes removed count: {row_del_cnt}"
     logger.debug(msg)
 
-    return msg
+    return msg, tr_list
 
 
 def proc_db_import(df_to_proc):
