@@ -10,6 +10,11 @@ class UploadFileForm(forms.Form):
 class RemoveDuples(forms.Form):
     pass
 
+
+class Trans(forms.Form):
+    pass
+
+
 class ProcessFileForm(forms.Form):
     """
     class Meta:
@@ -17,7 +22,6 @@ class ProcessFileForm(forms.Form):
     
     #text = forms.CharField(widget=forms.Textarea)
     """
-    
     
     def __init__(self, dynamic_field_names, *args, **kwargs):
         # number of parameters in conf from xlsx_parser.yaml to skip 

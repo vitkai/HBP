@@ -9,13 +9,30 @@ from .models import Transactions, CCY, Category, Document
 # own function to handle an uploaded file
 from .xlsx_parser import load_file, parse_data
 from .db_updates import proc_db_import, db_remove_duples
-from .forms import UploadFileForm, ProcessFileForm
+from .forms import UploadFileForm, ProcessFileForm, Trans
 
 
 class TransactionsListView(generic.ListView):
     """Generic class-based view for a list of books."""
     model = Transactions
     paginate_by = 25
+
+
+def trans(request):
+    if request.method == 'POST':
+        form = Trans(request.POST)
+        if form.is_valid():
+            """
+            newdoc = Document(docfile = request.FILES['docfile'])
+            newdoc.save()
+            # parse(newdoc.docfile.name)
+            return HttpResponseRedirect(reverse('upload_file'))
+            """
+            pass
+    else:
+        form = Trans() # An empty, unbound form
+
+    return render(request, 'trans.html', {'documents': '', 'form': form})
 
 
 def index(request):
